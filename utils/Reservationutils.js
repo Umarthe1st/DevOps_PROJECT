@@ -26,30 +26,30 @@ async function createReservation(req, res) {
             return res.status(400).json({ error: "Customer name is required." });
         }
 
-        if(!location) {
+        if (!location) {
             return res.status(400).json({ error: "Location is required." });
         }
         const dateFormat = /^\d{4}-\d{2}-\d{2}$/;
         if (!date) {
             return res.status(400).json({ error: "Reservation date is required." });
-        } else if(!dateFormat.test(date)) {
-            return res.status(400).json({ error: "Invalid date format. Follow this format YYYY-MM-DD"})
+        } else if (!dateFormat.test(date)) {
+            return res.status(400).json({ error: "Invalid date format. Follow this format YYYY-MM-DD" })
         }
         const timeFormat = /^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?$/
         if (!time) {
             return res.status(400).json({ error: "Reservation time is required." });
-        } else if(!timeFormat.test(time)) {
+        } else if (!timeFormat.test(time)) {
             return res.status(400).json({ error: "Invalid time format. It should be in 24-hour format (HH:MM), ranging from 00:00 to 23:59." });
         }
 
-        if (!number_of_guests || number_of_guests <= 0) {
+        if (!number_of_guests || number_of_guests <= 0 || isNaN(number_of_guests)) {
             return res.status(400).json({ error: "Number of guests must be at least 1." });
         }
 
-        if (!contact_info) {
+        if (!contact_info || contact_info.length !== 8 || isNaN(contact_info)) {
             return res.status(400).json({ error: "A valid phone number is required for contact." });
         } else {
-            const newReservation = new Reservation(customer_name, date, time, number_of_guests, contact_info, status)
+            const newReservation = new Reservation(customer_name, location, date, time, number_of_guests, contact_info, status)
             const updatedReservation = await writeJSON(newReservation, 'utils/Reservation.json');
             return res.status(201).json(updatedReservation);
         }
@@ -58,6 +58,15 @@ async function createReservation(req, res) {
     }
 }
 
+async function viewReservation(req, res) {
+    try {
+        const allReservation = await readJSON('utils/Reservation.json');
+        return res.status(201).json(allReservation);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
 module.exports = {
-    readJSON, writeJSON, createReservation
+    readJSON, writeJSON, createReservation, viewReservation
 };

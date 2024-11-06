@@ -7,8 +7,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("./public"));
 
-const {createReservation } = require('./utils/Reservationutils.js')
+const {createReservation, viewReservation} = require('./utils/Reservationutils.js')
 app.post('/reservation', createReservation);
+app.get('/view-reservation', viewReservation);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" + startPage);
