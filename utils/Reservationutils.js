@@ -49,9 +49,16 @@ async function createReservation(req, res) {
         if (!contact_info || contact_info.length !== 8 || isNaN(contact_info)) {
             return res.status(400).json({ error: "A valid phone number is required for contact." });
         } else {
-            const newReservation = new Reservation(customer_name, location, date, time, number_of_guests, contact_info, status)
-            const updatedReservation = await writeJSON(newReservation, 'utils/Reservation.json');
-            return res.status(201).json(updatedReservation);
+            const reservations = await readJSON('utils/Reservation.json');
+            const reservationsExist =  reservations.find(reservations => reservations.contact_info === contact_info);
+
+            if (reservationsExist) {
+                return res.status(400).json({ error: "This contact number is already in use for a reservation." });
+            } else {
+                const newReservation = new Reservation(customer_name, location, date, time, number_of_guests, contact_info, status)
+                const updatedReservation = await writeJSON(newReservation, 'utils/Reservation.json');
+                return res.status(201).json(updatedReservation);
+            }
         }
     } catch (error) {
         return res.status(500).json({ message: error.message });

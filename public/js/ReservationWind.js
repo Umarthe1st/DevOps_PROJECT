@@ -42,7 +42,6 @@ function createReservation() {
         }
     };
 
-    // Send the request with the reservation data
     request.send(JSON.stringify(jsonData));
 }
 
