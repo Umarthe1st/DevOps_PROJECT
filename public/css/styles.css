@@ -1,18 +1,15 @@
-/* Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* General Styles */
 body {
     font-family: Arial, sans-serif;
     color: #333;
     background-color: #f4f4f4;
 }
 
-/* Header Styles */
 .header {
     background-color: #333;
     color: #fff;
@@ -44,9 +41,8 @@ body {
     text-decoration: underline;
 }
 
-/* Hero Section */
 .hero {
-    background-image: url('path-to-your-image.jpg'); /* Replace with an actual image path */
+    background-image: url('path-to-your-image.jpg'); 
     background-size: cover;
     background-position: center;
     color: black;
@@ -59,7 +55,6 @@ body {
     margin-bottom: 0.5em;
 }
 
-/* Section Styles */
 .section {
     padding: 2em;
     text-align: center;
@@ -86,7 +81,6 @@ body {
     background-color: #555;
 }
 
-/* Opening Hours Styles */
 .hours-details {
     display: flex;
     flex-direction: column;
@@ -95,7 +89,7 @@ body {
     margin: 0 auto;
     font-size: 1em;
     color: #333;
-    text-align: center; /* Center-align text within each item */
+    text-align: center;
 }
 
 .hours-details h3 {
@@ -105,7 +99,6 @@ body {
     color: #333;
 }
 
-/* Footer Styles */
 .footer {
     background-color: #333;
     color: #fff;
