@@ -42,7 +42,6 @@ function createReservation() {
         }
     };
 
-    // Send the request with the reservation data
     request.send(JSON.stringify(jsonData));
 }
 
@@ -60,6 +59,7 @@ function viewReservation() {
         for (var i = 0; i < response.length; i++)
         {
             html += '<tr>' +
+                '<td>' + (i+1) + '</td>' +
                 '<td>' + response[i].booking_id + '</td>' +
                 '<td>' + response[i].customer_name + '</td>' +
                 '<td>' + response[i].location + '</td>' +
