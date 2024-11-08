@@ -1,9 +1,157 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<title>DVOPS - Restaurant Management Web App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratatouille</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/ReservationWind.js"></script>
 </head>
-<body>
-Welcome to my Restaurant Management Web Application. In this application, users
-will get to manage resources.
+
+<body onload="viewReservation()">
+    <header class="header">
+        <div class="container">
+            <h1>Ratatouille</h1>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#book" data-toggle="modal" data-target="#resourceModal">Book a Table</a></li>
+                    <li><a href="#menu">Menu</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Welcome to Ratatouille Singapore</h2>
+            <p>Discover our unique culinary experience blending traditional French cuisine with a modern twist.</p>
+        </div>
+    </section>
+
+    <section id="book" class="section">
+        <h2>Book a Table</h2>
+        <p>Reserve your spot at Ratatouille's today!</p>
+        <button type="button" data-toggle="modal" data-target="#resourceModal">Book Now</button>
+    </section>
+
+    <section id="reservation" class="section">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <table class="table table-striped table-striped-custom">
+                    <thead>
+                        <tr>
+                            <th>No. </th>
+                            <th>Booking ID</th>
+                            <th>Customer Name</th>
+                            <th>Location</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>No. of guest</th>
+                            <th>Contact No.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableContent">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="section">
+        <h2>Our Menu</h2>
+        <p>Explore our variety of dishes crafted by expert chefs.</p>
+        <button>View Menu</button>
+    </section>
+
+    <section id="hours" class="section">
+        <h2>Opening Hours</h2>
+        <div class="hours-details">
+            <h3>Restaurant:</h3>
+            <p>Monday to Wednesday: 11:30am to 10pm</p>
+            <p>Thursday to Friday: 11:30am to 11pm</p>
+            <p>Saturday: 8:30am to 11pm</p>
+            <p>Sunday: 8:30am to 10pm</p>
+
+            <h3>Breakfast:</h3>
+            <p>Saturday to Sunday: 8:30am to 10:30am</p>
+
+            <h3>Brunch:</h3>
+            <p>Saturday to Sunday: 11am to 3pm</p>
+
+            <h3>Lunch:</h3>
+            <p>Monday to Friday: 11:30am to 4pm</p>
+
+            <h3>Dinner:</h3>
+            <p>Sunday to Wednesday: 5pm to 10pm</p>
+            <p>Thursday to Saturday: 5pm to 11pm</p>
+
+            <h3>Bar:</h3>
+            <p>Monday to Thursday: 11:30am to 10:30pm</p>
+            <p>Friday: 11:30am to 10:30pm</p>
+            <p>Saturday: 7:30am to 10:30pm</p>
+            <p>Sunday: 7:30am to 10:30pm</p>
+        </div>
+    </section>
+
+    <div class="modal fade" id="resourceModal" tabindex="-1" role="dialog" aria- labelledby="resourceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resourceModalLabel">Book A Reservation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="customer_name">Customer Name</label>
+                            <input type="text" class="form-control" id="customer_name" placeholder="Enter your name"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" class="form-control" id="location"
+                                placeholder="Enter Restaurant location" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" class="form-control" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <input type="time" class="form-control" id="time" min="08:30" max="22:00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="number_of_guests">Number of Guests</label>
+                            <input type="number" class="form-control" id="number_of_guests" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact_info">Contact Number</label>
+                            <input type="text" class="form-control" id="contact_info" placeholder="Enter Your Contact Number" required>
+                        </div>
+
+                        <p align="right" id="message" class=""></p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="createReservation()">Book Reservation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2023 Ratatouille. All Rights Reserved.</p>
+    </footer>
+
 </body>
+
 </html>
