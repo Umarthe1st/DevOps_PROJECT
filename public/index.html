@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ratatouille</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -148,10 +148,56 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editReservationModal" tabindex="-1" role="dialog" aria-labelledby="editReservationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editReservationModalLabel">Edit Reservation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="editName">Customer Name</label>
+                            <input type="text" class="form-control" id="editName" placeholder="Enter customer name">
+                        </div>
+                        <div class="form-group">
+                            <label for="editLocation">Location</label>
+                            <input type="text" class="form-control" id="editLocation" placeholder="Enter reservation location">
+                        </div>
+                        <div class="form-group">
+                            <label for="editDate">Date</label>
+                            <input type="date" class="form-control" id="editDate" placeholder="Enter reservation date">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTime">Time</label>
+                            <input type="time" class="form-control" id="editTime" placeholder="Enter reservation time">
+                        </div>
+                        <div class="form-group">
+                            <label for="editGuests">Number of Guests</label>
+                            <input type="number" class="form-control" id="editGuests" placeholder="Enter number of guests">
+                        </div>
+                        <div class="form-group">
+                            <label for="editContact">Contact Info</label>
+                            <input type="text" class="form-control" id="editContact" placeholder="Enter contact phone number">
+                        </div>
+                        <p align="right" id="editMessage" class=""></p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateButton" onclick="">Update Reservation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <p>&copy; 2023 Ratatouille. All Rights Reserved.</p>
     </footer>
 
 </body>
-
 </html>
+
