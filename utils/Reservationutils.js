@@ -133,6 +133,3 @@ module.exports = {
     readJSON, writeJSON, createReservation, viewReservation, editReservation, deleteReservation
 };
 
-module.exports = {
-    readJSON, writeJSON, createReservation, viewReservation
-};
