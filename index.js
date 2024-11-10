@@ -11,8 +11,9 @@ app.use(bodyParser.json());
 app.use(express.static("./public"));
 app.use(express.static("./utils"));
 
-const { addMenuItem } = require('./utils/MenuUtil.js')
+const { addMenuItem, viewMenu } = require('./utils/MenuUtil.js')
 app.post('/add-MenuItem', addMenuItem);
+app.get('/view-menu', viewMenu)
 const { createReservation, viewReservation,  } = require('./utils/Reservationutils.js');
 const {  editReservation, deleteReservation, } = require('./utils/UpdateUtil.js');
 

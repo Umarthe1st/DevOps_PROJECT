@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ratatouille Menu</title>
-    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body id="menubody">
     <button id="add-menu-btn" onclick="toggleForm()">Add Menu Item</button>
-    <h1>Ratatouille's Menu</h1>
+    <h1 id="menuh1">Ratatouille's Menu</h1>
     <div id="menu-container">
         
     </div>
@@ -25,67 +25,7 @@
         </form>
     </div>
 
-    <script>
-        function toggleForm() {
-            const formContainer = document.getElementById('menu-form-container');
-            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
-        }
-
-        async function submitMenuItem(event) {
-            event.preventDefault();
-            const name = document.getElementById('item-name').value;
-            const description = document.getElementById('item-description').value;
-            const price = parseFloat(document.getElementById('item-price').value);
-
-            const newItem = { name, description, price };
-
-            try {
-                const response = await fetch('/add-MenuItem', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newItem)
-                });
-
-                if (response.ok) {
-                    document.getElementById('menu-form').reset();
-                    toggleForm();
-                    loadMenu();
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.message}`);
-                }
-            } catch (error) {
-                console.error('Failed to add menu item:', error);
-            }
-        }
-
-        async function loadMenu() {
-            try {
-                const response = await fetch('menu.json');
-                if (!response.ok) throw new Error('Failed to load menu data');
-
-                const menuData = await response.json();
-                const menuContainer = document.getElementById('menu-container');
-                menuContainer.innerHTML = '';
-
-                menuData.forEach(item => {
-                    const menuItem = document.createElement('div');
-                    menuItem.classList.add('menu-item');
-                    menuItem.innerHTML = `
-                    <h2>${item.name}</h2>
-                    <p>${item.description}</p>
-                    <p><strong>Price: $${item.price.toFixed(2)}</strong></p>
-                    `;
-                    menuContainer.appendChild(menuItem);
-                });
-            } catch (error) {
-                console.error(error);
-                document.getElementById('menu-container').innerText = 'Failed to load menu.';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadMenu);
-    </script>
+    <script src = "js/menu.js"></script>
 </body>
 
 </html>
