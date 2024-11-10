@@ -13,7 +13,9 @@ app.use(express.static("./utils"));
 
 const { addMenuItem } = require('./utils/MenuUtil.js')
 app.post('/add-MenuItem', addMenuItem);
-const { createReservation, viewReservation, editReservation, deleteReservation } = require('./utils/Reservationutils.js');
+const { createReservation, viewReservation,  } = require('./utils/Reservationutils.js');
+const {  editReservation, deleteReservation, } = require('./utils/UpdateUtil.js');
+
 
 app.post('/reservation', createReservation);
 app.get('/view-reservation', viewReservation);
