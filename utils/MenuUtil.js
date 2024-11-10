@@ -39,4 +39,13 @@ async function addMenuItem(req, res) {
     }
 }
 
-module.exports = { readJSON, writeJSON, addMenuItem };
+async function viewMenu(req, res) {
+    try {
+        const allMenuItems = await readJSON('utils/menu.json');
+        return res.status(201).json(allMenuItems);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+module.exports = { readJSON, writeJSON, addMenuItem, viewMenu };
