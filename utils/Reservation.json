@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "customer_name": "dadsa",
+    "location": "asda",
+    "date": "2024-11-11",
+    "time": "17:07",
+    "number_of_guests": 3,
+    "contact_info": "12345678",
+    "status": "pending",
+    "booking_id": "1731229668678123"
+  }
+]

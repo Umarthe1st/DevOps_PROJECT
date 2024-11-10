@@ -8,6 +8,19 @@ async function editReservation(req, res) {
         const id = req.params.booking_id;
         const { customer_name, location, date, time, number_of_guests, contact_info } = req.body;
 
+        // Additional Validation on the server-side
+        if (!customer_name || !location || !date || !time || !number_of_guests || !contact_info) {
+            return res.status(400).json({ message: 'All fields are required!' });
+        }
+
+        if (String(contact_info).length < 8) {
+            return res.status(400).json({ message: 'Contact number must be at least 8 digits!' });
+        }
+
+        if (number_of_guests < 1) {
+            return res.status(400).json({ message: 'Number of guests must be at least 1!' });
+        }
+
         const allReservations = await readJSON('utils/Reservation.json');
         let modified = false;
 
@@ -36,7 +49,6 @@ async function editReservation(req, res) {
         return res.status(500).json({ message: error.message });
     }
 }
-
 async function deleteReservation(req, res) {
     try {
         const id = req.params.booking_id;

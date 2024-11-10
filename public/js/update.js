@@ -27,6 +27,24 @@ function updateReservation(id) {
         return;
     }
 
+    // Additional Validation
+    if (jsonData.contact_info.length < 8) {
+        document.getElementById("editMessage").innerHTML = 'Contact number must be at least 8 digits!';
+        document.getElementById("editMessage").setAttribute("class", "text-danger");
+        return;
+    }
+
+    if (jsonData.number_of_guests < 1) {
+        document.getElementById("editMessage").innerHTML = 'Number of guests must be at least 1!';
+        document.getElementById("editMessage").setAttribute("class", "text-danger");
+        return;
+    }
+
+    // Confirmation dialog
+    if (!confirm("Are you sure you want to save these changes?")) {
+        return; // User canceled the confirmation dialog
+    }
+
     var request = new XMLHttpRequest();
     request.open("PUT", "/edit-reservation/" + id, true);
     request.setRequestHeader('Content-Type', 'application/json');
@@ -43,6 +61,7 @@ function updateReservation(id) {
     };
     request.send(JSON.stringify(jsonData));
 }
+
 
 function deleteReservation(selectedId) {
     var response = "";
