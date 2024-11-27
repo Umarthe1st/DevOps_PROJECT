@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "customer_name": "poliop",
+    "location": "mandible",
+    "date": "2024-11-28",
+    "time": "15:58",
+    "number_of_guests": "4",
+    "contact_info": "12341697",
+    "status": "pending",
+    "booking_id": "1732694316967734"
+  },
+  {
+    "customer_name": "poliop",
+    "location": "mandible",
+    "date": "2024-11-28",
+    "time": "15:58",
+    "number_of_guests": "4",
+    "contact_info": "12345697",
+    "status": "pending",
+    "booking_id": "1732694316967734"
+  }
+]
