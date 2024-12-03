@@ -48,6 +48,7 @@ describe("Reservation Frontend", () => {
     cy.get('#tableContent').contains('Updated Reservation').should('not.exist');
     });
 
+
   it('should display an error if any field is empty', () => {
     cy.visit(baseUrl);
     cy.get('button.btn-warning').filter(':contains("Edit")').last().click();
@@ -70,6 +71,45 @@ describe("Reservation Frontend", () => {
 });
 });
 
+describe("Reservation Frontend - Stubbing Tests", () => {
+  const baseUrl = "http://localhost:5050"; // Update with your application's URL
+
+  beforeEach(() => {
+    cy.visit(baseUrl);
+  });
+
+
+  it("should handle an error from the API when updating a reservation", () => {
+    // Stub the PUT request to return an error
+    cy.intercept("PUT", "/edit-reservation/*", {
+      statusCode: 400,
+      body: { message: "Failed to update reservation!" },
+    }).as("updateReservationError");
+
+    // Simulate user actions for editing
+    cy.get("button.btn-warning").filter(":contains('Edit')").last().click();
+
+    cy.get("#editName").clear().type("Faulty Name");
+    cy.get("#editLocation").clear().type("Faulty Location");
+    cy.get("#editDate").clear().type("2024-12-06");
+    cy.get("#editTime").clear().type("20:00");
+    cy.get("#editGuests").clear().type("4");
+    cy.get("#editContact").clear().type("87654321");
+
+    // Submit the update form
+    cy.get("#updateButton").click();
+
+    // Wait for the stubbed API call and verify the error response
+    cy.wait("@updateReservationError").its("response.statusCode").should("eq", 400);
+
+    // Check that the error message is displayed
+    cy.get("#editMessage")
+      .should("contain", "Failed to update reservation!")
+      .and("have.class", "text-danger");
+  });
+});
+
+
 
 
 
@@ -78,18 +118,4 @@ describe("Reservation Frontend", () => {
 
      
 
-    // it('should delete a resource', () => {
-    //   // Visit the base URL
-    //   cy.visit(baseUrl);
-
-    //   // Click the delete button for the last resource
-    //   cy.get('button.btn-danger')
-    //     .filter(':contains("Delete")')
-    //     .last()
-    //     .click();
-
-    //   // Verify that the resource has been deleted
-    //   cy.get('#tableContent').contains('Updated Resource').should('not.exist');
-    // });
-
-
+    

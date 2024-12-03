@@ -98,7 +98,7 @@ describe("Reservation API", () => {
         chai.request(baseUrl)
             .delete(`/delete-reservation/${reservationId}`)
             .end((err, res) => {
-                expect(res).to.have.status(201);
+                expect(res).to.have.status(200);
                 expect(res.body.message).to.equal('Reservation deleted successfully!');
                 done();
             });
