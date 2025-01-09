@@ -34,11 +34,6 @@ function updateReservation(id) {
         return;
     }
 
-    if (jsonData.number_of_guests < 1) {
-        document.getElementById("editMessage").innerHTML = 'Number of guests must be at least 1!';
-        document.getElementById("editMessage").setAttribute("class", "text-danger");
-        return;
-    }
 
     // Confirmation dialog
     if (!confirm("Are you sure you want to save these changes?")) {

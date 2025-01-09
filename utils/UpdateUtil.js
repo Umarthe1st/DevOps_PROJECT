@@ -13,12 +13,12 @@ async function editReservation(req, res) {
             return res.status(400).json({ message: 'All fields are required!' });
         }
 
-        if (String(contact_info).length < 8) {
-            return res.status(400).json({ message: 'Contact number must be at least 8 digits!' });
+        if (!/^[a-zA-Z\s]{2,50}$/.test(customer_name)) {
+            return res.status(400).json({ message: 'Customer name must be 2-50 characters and only contain letters.' });
         }
 
-        if (number_of_guests < 1) {
-            return res.status(400).json({ message: 'Number of guests must be at least 1!' });
+        if (String(contact_info).length < 8) {
+            return res.status(400).json({ message: 'Contact number must be at least 8 digits!' });
         }
 
         const allReservations = await readJSON('utils/Reservation.json');
