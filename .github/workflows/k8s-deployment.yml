@@ -14,11 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Debug Kubeconfig
-        run: |
-          cat ~/.kube/config
-          kubectl config view
-
 
       # Step 2: Set up kubectl using the kubeconfig secret
       - name: Set up kubectl
