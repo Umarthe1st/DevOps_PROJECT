@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rms-deployment
+spec:
+  replicas: 2  # Specifies how many identical replicas (pods) should be maintained
+  selector:
+    matchLabels:
+      app: rms-docker-img
+  template:
+    metadata:
+      labels:
+        app: rms-docker-img
+    spec:
+      containers:
+      - name: rms-container
+        image: umarfafa/rms-docker-img:latest
+        ports:
+        - containerPort: 5050  # Port that the application listens on
