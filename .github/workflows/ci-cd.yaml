@@ -3,14 +3,14 @@ name: CI - Run Backend and Frontend Tests
 on:
   push:
     branches:
-      - main  # Run tests on push to main
+      - main  # Trigger workflow on pushes to the main branch
   pull_request:
     branches:
-      - main  # Run tests for pull requests targeting main
+      - main  # Trigger workflow on pull requests targeting the main branch
 
 jobs:
   backend-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # Explicitly specify Ubuntu 22.04 to avoid future updates to ubuntu-latest
 
     steps:
       # Step 1: Check out the repository
@@ -31,16 +31,21 @@ jobs:
       - name: Run Backend Tests
         run: npm run backend-test
 
-      # Step 5: Upload backend coverage report
+      # Step 5: Ensure .nyc_output exists
+      - name: Check Backend Coverage Directory
+        run: ls .nyc_output || echo "Directory not found"
+
+      # Step 6: Upload backend coverage report
       - name: Upload Backend Coverage Report
         if: success()
         uses: actions/upload-artifact@v3
         with:
           name: backend-coverage-report
-          path: .nyc_output/  # Adjust if your coverage path is different
+          path: .nyc_output/  # Ensure this path matches where nyc output is stored
 
   frontend-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # Explicitly specify Ubuntu 22.04
+
     needs: backend-tests  # Run frontend tests only after backend tests pass
 
     steps:
@@ -58,7 +63,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Run frontend instrumentation (if needed)
+      # Step 4: Instrument frontend code
       - name: Instrument Frontend Code
         run: npm run frontend-instrument
 
@@ -66,10 +71,14 @@ jobs:
       - name: Run Frontend Tests
         run: npm run frontend-test
 
-      # Step 6: Upload frontend coverage report
+      # Step 6: Ensure .nyc_output exists
+      - name: Check Frontend Coverage Directory
+        run: ls .nyc_output || echo "Directory not found"
+
+      # Step 7: Upload frontend coverage report
       - name: Upload Frontend Coverage Report
         if: success()
         uses: actions/upload-artifact@v3
         with:
           name: frontend-coverage-report
-          path: .nyc_output/  # Adjust if your coverage path is different
+          path: .nyc_output/  # Ensure this path matches where nyc output is stored
