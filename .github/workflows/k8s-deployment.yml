@@ -23,18 +23,28 @@ jobs:
             echo "Decoded kubeconfig is empty or invalid!" >&2
             exit 1
           fi
-          cat ~/.kube/config  # Debug: View kubeconfig content
+          kubectl config view  # Ensure kubeconfig is valid
           kubectl version --client
           kubectl cluster-info
 
-      # Step 3: Apply Kubernetes manifests (Service and Deployment)
+      # Step 3: Check Kubernetes manifest files
+      - name: Check manifest files
+        run: |
+          if [ ! -f rms-service.yaml ] || [ ! -f rms-deployment.yaml ]; then
+            echo "Required Kubernetes manifest files are missing!" >&2
+            exit 1
+          fi
+
+      # Step 4: Apply Kubernetes manifests (Service and Deployment)
       - name: Deploy Kubernetes resources
         run: |
-          kubectl apply -f rms-service.yaml
-          kubectl apply -f rms-deployment.yaml
+          kubectl apply -f rms-service.yaml || sleep 5 && kubectl apply -f rms-service.yaml
+          kubectl apply -f rms-deployment.yaml || sleep 5 && kubectl apply -f rms-deployment.yaml
 
-      # Step 4: Verify Deployment
+      # Step 5: Verify Deployment
       - name: Verify Deployment
         run: |
           kubectl rollout status deployment/rms-deployment
           kubectl get all
+          kubectl describe deployment rms-deployment  # Debugging: View deployment details
+          kubectl logs -l app=rms-docker-img          # Debugging: View logs for the application
