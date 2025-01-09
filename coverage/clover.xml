@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1736411061250" clover="3.2.0">
-  <project timestamp="1736411061250" name="All files">
+<coverage generated="1736413185195" clover="3.2.0">
+  <project timestamp="1736413185195" name="All files">
     <metrics statements="89" coveredstatements="52" conditionals="34" coveredconditionals="16" methods="9" coveredmethods="7" elements="132" coveredelements="75" complexity="0" loc="89" ncloc="89" packages="1" files="2" classes="2"/>
     <file name="ReservationWind.js" path="C:\school\2.2\DEVOP\DevOps_PROJECT\public\js\ReservationWind.js">
       <metrics statements="43" coveredstatements="11" conditionals="14" coveredconditionals="0" methods="4" coveredmethods="2"/>
@@ -44,7 +44,7 @@
       <line num="56" count="8" type="stmt"/>
       <line num="58" count="8" type="stmt"/>
       <line num="59" count="8" type="stmt"/>
-      <line num="61" count="100" type="stmt"/>
+      <line num="61" count="60" type="stmt"/>
       <line num="77" count="8" type="stmt"/>
       <line num="80" count="9" type="stmt"/>
     </file>
