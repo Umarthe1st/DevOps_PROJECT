@@ -1,0 +1,40 @@
+name: Kubernetes Deployment
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up kubectl using kubeconfig
+      - name: Set up kubectl
+        env:
+          KUBECONFIG: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          echo "$KUBECONFIG" | base64 -d > ~/.kube/config
+          kubectl version --client
+          kubectl cluster-info
+
+      # Step 3: Deploy the Service
+      - name: Apply Service
+        run: |
+          kubectl apply -f rms-services.yaml
+
+      # Step 4: Deploy the Deployment
+      - name: Apply Deployment
+        run: |
+          kubectl apply -f rms-deployment.yaml
+
+      # Step 5: Verify Deployment
+      - name: Verify Deployment
+        run: |
+          kubectl rollout status deployment/rms-deployment
+          kubectl get all
