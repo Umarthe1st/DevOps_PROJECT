@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: cimg/node:16.18  # Use a Node.js image with the desired version
+      - image: cimg/node:16.18  # Node.js 16 with Docker support
     working_directory: ~/repo
 
 jobs:
@@ -37,11 +37,17 @@ jobs:
           name: Install dependencies
           command: npm install
       - run:
+          name: Install Xvfb for Cypress
+          command: sudo apt-get update && sudo apt-get install -y xvfb
+      - run:
+          name: Remove existing coverage directory
+          command: rm -rf .nyc_output
+      - run:
           name: Instrument frontend code
           command: npm run frontend-instrument
       - run:
           name: Run frontend tests
-          command: npm run frontend-test
+          command: xvfb-run --auto-servernum npm run frontend-test
       - run:
           name: Check Frontend Coverage Directory
           command: |
