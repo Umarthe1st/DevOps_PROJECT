@@ -96,16 +96,18 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: CI Workflow Status: ${{ job.status }}
+          subject: CI Workflow Status: ${{ needs.backend-tests.result }} / ${{ needs.frontend-tests.result }}
           body: |
             Hello,
 
-            The CI workflow has completed with the following status: **${{ job.status }}**.
+            The CI workflow has completed with the following status:
+            - Backend Tests: **${{ needs.backend-tests.result }}**
+            - Frontend Tests: **${{ needs.frontend-tests.result }}**
 
             You can view the details here:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-            Best regards,
+            Best regards,  
             CI/CD System
           to: umarrashad2006@gmail.com
           from: umarrashad2006@gmail.com
