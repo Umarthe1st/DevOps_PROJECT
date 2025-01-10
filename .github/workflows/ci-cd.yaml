@@ -96,17 +96,14 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: CI Workflow Status: ${{ needs.backend-tests.result }} / ${{ needs.frontend-tests.result }}
+          subject: CI Workflow Status: Backend - ${{ needs.backend-tests.outcome }}, Frontend - ${{ needs.frontend-tests.outcome }}
           body: |
             Hello,
-
             The CI workflow has completed with the following status:
-            - Backend Tests: **${{ needs.backend-tests.result }}**
-            - Frontend Tests: **${{ needs.frontend-tests.result }}**
-
+            - Backend Tests: **${{ needs.backend-tests.outcome }}**
+            - Frontend Tests: **${{ needs.frontend-tests.outcome }}**
             You can view the details here:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
             Best regards,  
             CI/CD System
           to: umarrashad2006@gmail.com
