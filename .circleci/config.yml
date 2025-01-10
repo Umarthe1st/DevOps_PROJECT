@@ -1,15 +1,15 @@
 version: 2.1
 
-executors:
-  node-executor:
-    docker:
-      - image: cimg/node:16  # Use CircleCI's maintained Node.js image
-
 jobs:
   backend-tests:
-    executor: node-executor
+    machine: true  # Use CircleCI's machine executor
     steps:
-      - checkout  # Step 1: Checkout the repository
+      - checkout  # Step 1: Check out the repository
+      - run:
+          name: Install Node.js
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            sudo apt-get install -y nodejs
       - run:
           name: Install dependencies
           command: npm install
