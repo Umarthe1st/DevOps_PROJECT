@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
+
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up kubectl using the kubeconfig secret
+
       - name: Set up kubectl
         run: |
           mkdir -p ~/.kube
@@ -27,7 +27,7 @@ jobs:
           kubectl version --client
           kubectl cluster-info
 
-      # Step 3: Check Kubernetes manifest files
+
       - name: Check manifest files
         run: |
           if [ ! -f rms-service.yaml ] || [ ! -f rms-deployment.yaml ]; then
@@ -35,13 +35,13 @@ jobs:
             exit 1
           fi
 
-      # Step 4: Apply Kubernetes manifests (Service and Deployment)
+      
       - name: Deploy Kubernetes resources
         run: |
           kubectl apply -f rms-service.yaml || sleep 5 && kubectl apply -f rms-service.yaml
           kubectl apply -f rms-deployment.yaml || sleep 5 && kubectl apply -f rms-deployment.yaml
 
-      # Step 5: Verify Deployment
+      
       - name: Verify Deployment
         run: |
           kubectl rollout status deployment/rms-deployment
