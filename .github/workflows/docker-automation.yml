@@ -49,10 +49,13 @@ jobs:
           subject: Docker Automation Status: ${{ needs.docker-build-and-push.outcome }}
           body: |
             Hello,
+
             The Docker Automation workflow has completed with the following status:
             - Job Status: **${{ needs.docker-build-and-push.outcome }}**
+
             You can view the details here:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
             Best regards,  
             CI/CD System
           to: umarrashad2006@gmail.com
