@@ -82,3 +82,30 @@ jobs:
         with:
           name: frontend-coverage-report
           path: .nyc_output/  # Ensure this path matches where nyc output is stored
+
+  notify:
+    runs-on: ubuntu-22.04
+
+    needs: [backend-tests, frontend-tests]  # Send notifications after both tests are done
+
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: CI Workflow Status: ${{ job.status }}
+          body: |
+            Hello,
+
+            The CI workflow has completed with the following status: **${{ job.status }}**.
+
+            You can view the details here:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Best regards,
+            CI/CD System
+          to: umarrashad2006@gmail.com
+          from: umarrashad2006@gmail.com
