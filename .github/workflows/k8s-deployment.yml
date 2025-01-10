@@ -42,6 +42,7 @@ jobs:
           kubectl apply -f rms-deployment.yaml || sleep 5 && kubectl apply -f rms-deployment.yaml
 
 
+
       - name: Verify Deployment
         run: |
           kubectl rollout status deployment/rms-deployment
