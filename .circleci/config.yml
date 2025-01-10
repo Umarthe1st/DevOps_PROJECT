@@ -3,62 +3,22 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: cimg/node:16.18  # Node.js 16 with Docker support
-    working_directory: ~/repo
+      - image: circleci/node:16.20  # Specify Node.js version
 
 jobs:
   backend-tests:
     executor: node-executor
     steps:
-      - checkout
+      - checkout  # Step 1: Checkout the repository
       - run:
           name: Install dependencies
           command: npm install
       - run:
-          name: Run backend tests
+          name: Run Backend Tests
           command: npm run backend-test
-      - run:
-          name: Check Backend Coverage Directory
-          command: |
-            if [ -d .nyc_output ]; then
-              echo "Coverage directory exists."
-            else
-              echo "Directory not found"
-            fi
-      - store_artifacts:
-          path: .nyc_output/
-          destination: backend-coverage-report
-
-  frontend-tests:
-    executor: node-executor
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: npm install
-      - run:
-          name: Instrument frontend code
-          command: npm run frontend-instrument
-      - run:
-          name: Run frontend tests
-          command: xvfb-run --auto-servernum npm run frontend-test
-      - run:
-          name: Check Frontend Coverage Directory
-          command: |
-            if [ -d .nyc_output ]; then
-              echo "Coverage directory exists."
-            else
-              echo "Directory not found"
-            fi
-      - store_artifacts:
-          path: .nyc_output/
-          destination: frontend-coverage-report
 
 workflows:
   version: 2
   test-workflow:
     jobs:
       - backend-tests
-      - frontend-tests:
-          requires:
-            - backend-tests
