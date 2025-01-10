@@ -13,29 +13,23 @@ jobs:
     runs-on: ubuntu-22.04  # Explicitly specify Ubuntu 22.04 to avoid future updates to ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16  # Specify the Node.js version
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Run backend tests with Mocha
       - name: Run Backend Tests
         run: npm run backend-test
 
-      # Step 5: Ensure .nyc_output exists
       - name: Check Backend Coverage Directory
         run: ls .nyc_output || echo "Directory not found"
 
-      # Step 6: Upload backend coverage report
       - name: Upload Backend Coverage Report
         if: success()
         uses: actions/upload-artifact@v3
@@ -49,33 +43,26 @@ jobs:
     needs: backend-tests  # Run frontend tests only after backend tests pass
 
     steps:
-      # Step 1: Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16  # Specify the Node.js version
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Instrument frontend code
       - name: Instrument Frontend Code
         run: npm run frontend-instrument
 
-      # Step 5: Run frontend tests with Cypress
       - name: Run Frontend Tests
         run: npm run frontend-test
 
-      # Step 6: Ensure .nyc_output exists
       - name: Check Frontend Coverage Directory
         run: ls .nyc_output || echo "Directory not found"
 
-      # Step 7: Upload frontend coverage report
       - name: Upload Frontend Coverage Report
         if: success()
         uses: actions/upload-artifact@v3
@@ -86,7 +73,7 @@ jobs:
   notify:
     runs-on: ubuntu-22.04
 
-    needs: [backend-tests, frontend-tests]  # Send notifications after both tests are done
+    needs: [backend-tests, frontend-tests]
 
     steps:
       - name: Send Email Notification
@@ -96,12 +83,15 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: CI Workflow Status: Backend - ${{ needs.backend-tests.outcome }}, Frontend - ${{ needs.frontend-tests.outcome }}
+          subject: >
+            CI Workflow Status:
+            Backend - ${{ needs.backend-tests.result }},
+            Frontend - ${{ needs.frontend-tests.result }}
           body: |
             Hello,
             The CI workflow has completed with the following status:
-            - Backend Tests: **${{ needs.backend-tests.outcome }}**
-            - Frontend Tests: **${{ needs.frontend-tests.outcome }}**
+            - Backend Tests: **${{ needs.backend-tests.result }}**
+            - Frontend Tests: **${{ needs.frontend-tests.result }}**
             You can view the details here:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             Best regards,  
