@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       # Step 1: Check out the repository
@@ -41,12 +41,34 @@ jobs:
           kubectl apply -f rms-service.yaml || sleep 5 && kubectl apply -f rms-service.yaml
           kubectl apply -f rms-deployment.yaml || sleep 5 && kubectl apply -f rms-deployment.yaml
 
-
-
-
+      # Step 5: Verify Deployment
       - name: Verify Deployment
         run: |
           kubectl rollout status deployment/rms-deployment
           kubectl get all
           kubectl describe deployment rms-deployment  # Debugging: View deployment details
           kubectl logs -l app=rms-docker-img          # Debugging: View logs for the application
+
+  notify:
+    runs-on: ubuntu-22.04
+    needs: deploy
+
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Kubernetes Deployment Status: ${{ needs.deploy.outcome }}
+          body: |
+            Hello,
+            The Kubernetes Deployment workflow has completed with the following status:
+            - Job Status: **${{ needs.deploy.outcome }}**
+            You can view the details here:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Best regards,  
+            CI/CD System
+          to: umarrashad2006@gmail.com
+          from: umarrashad2006@gmail.com

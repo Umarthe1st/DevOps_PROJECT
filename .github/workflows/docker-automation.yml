@@ -33,3 +33,27 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/rms-docker-img:latest
+
+  notify:
+    runs-on: ubuntu-22.04
+    needs: docker-build-and-push
+
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Docker Automation Status: ${{ needs.docker-build-and-push.outcome }}
+          body: |
+            Hello,
+            The Docker Automation workflow has completed with the following status:
+            - Job Status: **${{ needs.docker-build-and-push.outcome }}**
+            You can view the details here:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Best regards,  
+            CI/CD System
+          to: umarrashad2006@gmail.com
+          from: umarrashad2006@gmail.com
