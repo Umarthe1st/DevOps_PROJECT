@@ -8,6 +8,7 @@ on:
     branches:
       - main  # Trigger on pull requests to main
 
+
 jobs:
   docker-build-and-push:
     runs-on: ubuntu-22.04
