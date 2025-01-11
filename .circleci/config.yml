@@ -1,0 +1,47 @@
+version: 2.1
+
+jobs:
+  backend-tests:
+    machine: true  # Use CircleCI's machine executor
+    steps:
+      - checkout  # Step 1: Check out the repository
+      - run:
+          name: Install Node.js
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run Backend Tests
+          command: npm run backend-test
+
+  frontend-tests:
+    machine: true  # Use CircleCI's machine executor
+    steps:
+      - checkout  # Step 1: Check out the repository
+      - run:
+          name: Install Node.js
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Install Xvfb (Required for Cypress)
+          command: sudo apt-get install -y xvfb
+      - run:
+          name: Run Frontend Tests
+          command: xvfb-run --auto-servernum npm run frontend-test
+          
+
+workflows:
+  version: 2
+  test-workflow:
+    jobs:
+      - backend-tests
+      - frontend-tests:
+          requires:
+            - backend-tests  # Ensure frontend tests run only after backend tests
