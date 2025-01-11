@@ -35,6 +35,7 @@ jobs:
       - run:
           name: Run Frontend Tests
           command: xvfb-run --auto-servernum npm run frontend-test
+          
 
 workflows:
   version: 2
