@@ -62,7 +62,7 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: >
-            Kubernetes Deployment Status: Kubernetes - ${{ needs.deploy.result }}
+            Kubernetes Deployment Status: Kubernetes - ${{ needs.deploy.outcome }}
           body: |
             Hello,
             The Kubernetes Deployment workflow has completed with the following status:

@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: >
             Docker Automation Status: 
-            Docker - ${{ needs.docker-build-and-push.result }},
+            Docker - ${{ needs.docker-build-and-push.outcome }},
 
           body: |
             Hello,
