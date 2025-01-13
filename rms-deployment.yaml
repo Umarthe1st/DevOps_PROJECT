@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: rms-container
-        image: umarfafa/rms-docker-img:latest
+        image: umarfafa/rms-docker-img:v3
         ports:
         - containerPort: 5050  # Port that the application listens on
