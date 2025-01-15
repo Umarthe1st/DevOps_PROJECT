@@ -11,10 +11,9 @@ spec:
     metadata:
       labels:
         app: rms-docker-img
-        
     spec:
       containers:
       - name: rms-container
-        image: umarfafa/rms-docker-img:v3
+        image: umarfafa/rms-docker-img:latest
         ports:
         - containerPort: 5050  # Port that the application listens on
