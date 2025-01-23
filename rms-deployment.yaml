@@ -12,7 +12,6 @@ spec:
       labels:
         app: rms-docker-img
 
-        
     spec:
       containers:
       - name: rms-container
