@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: umarfafa/rms-docker-img:v4
+    image: umarfafa/rms-docker-img:v5
     container_name: rms-docker-container
     
     ports:
