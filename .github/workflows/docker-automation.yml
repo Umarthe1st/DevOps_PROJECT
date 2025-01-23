@@ -25,11 +25,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/rms-docker-img:latest -f Dockerfile .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/rms-docker-img:v5 -f Dockerfile .
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/rms-docker-img:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/rms-docker-img:v5
 
   notify:
     runs-on: ubuntu-22.04
