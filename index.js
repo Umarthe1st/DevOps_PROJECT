@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require("body-parser");
-
+const logger = require('./logger');
 var app = express();
 
 const PORT = process.env.PORT || 5050
@@ -27,10 +27,15 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" + startPage);
 });
 
+const statusMonitor = require('express-status-monitor');
+app.use(statusMonitor())
+
 server = app.listen(PORT, function () {
     const address = server.address();
     const baseUrl = `http://${address.address == "::" ? 'localhost' : address.address}:${address.port}`;
     console.log(`Demo project at: ${baseUrl}`);
+    logger.info(`Demo project at: ${baseUrl}!`);
+    logger.error(`Example or error log`)
 });
 
 module.exports = { app, server };
