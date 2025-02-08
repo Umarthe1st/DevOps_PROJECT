@@ -65,7 +65,7 @@ jobs:
 
       - name: Upload Frontend Coverage Report
         if: success()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-report
           path: .nyc_output/  # Ensure this path matches where nyc output is stored
