@@ -1,0 +1,4 @@
+- job_name: "express-app"
+  metrics_path: "/metrics"
+  static_configs:
+    - targets: ["rms-service.default.svc.cluster.local:80"]

@@ -68,3 +68,108 @@ jobs:
             CI/CD System
           to: umarrashad2006@gmail.com
           from: umarrashad2006@gmail.com
+name: Kubernetes Deployment
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+          kubectl config view
+          kubectl version --client
+          kubectl cluster-info
+
+      - name: Check manifest files
+        run: |
+          if [ ! -f rms-service.yaml ] || [ ! -f rms-deployment.yaml ]; then
+            echo "Required Kubernetes manifest files are missing!" >&2
+            exit 1
+          fi
+
+      - name: Deploy Kubernetes resources
+        run: |
+          kubectl apply -f rms-service.yaml || sleep 5 && kubectl apply -f rms-service.yaml
+          kubectl apply -f rms-deployment.yaml || sleep 5 && kubectl apply -f rms-deployment.yaml
+
+      - name: Verify Deployment
+        run: |
+          kubectl rollout status deployment/rms-deployment
+          kubectl get all
+          kubectl describe deployment rms-deployment
+          kubectl logs -l app=rms-docker-img
+
+  port-forward:
+    runs-on: ubuntu-22.04
+    needs: deploy
+
+    steps:
+      - name: Set up kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+
+      - name: Install ngrok
+        run: |
+          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc && \
+          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && \
+          sudo apt update && sudo apt install ngrok
+
+      - name: Start ngrok for Grafana and Prometheus
+        run: |
+          nohup kubectl port-forward svc/prometheus-stack-grafana 3000:80 -n monitoring > /tmp/grafana.log 2>&1 &
+          nohup kubectl port-forward svc/prometheus-stack-kube-prom-prometheus 9090:9090 -n monitoring > /tmp/prometheus.log 2>&1 &
+          sleep 5
+          nohup ngrok http 3000 > /tmp/ngrok-grafana.log 2>&1 &
+          nohup ngrok http 9090 > /tmp/ngrok-prometheus.log 2>&1 &
+
+      - name: Get ngrok URLs
+        run: |
+          sleep 10
+          GRAFANA_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="command_line (http)") | .public_url' | sed -n 1p)
+          PROMETHEUS_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="command_line (http)") | .public_url' | sed -n 2p)
+          echo "GRAFANA_URL=${GRAFANA_URL}" >> $GITHUB_ENV
+          echo "PROMETHEUS_URL=${PROMETHEUS_URL}" >> $GITHUB_ENV
+
+  notify:
+    runs-on: ubuntu-22.04
+    needs: port-forward
+
+    steps:
+      - name: Debug Needs Context
+        run: |
+          echo "Outcome: ${{ needs.port-forward.outcome }}"
+
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Kubernetes Deployment Status: Success 🎉"
+          body: |
+            Hello,
+            
+            The Kubernetes Deployment workflow has completed successfully! 🚀
+
+            🔹 Grafana Dashboard: ${{ env.GRAFANA_URL }}
+            🔹 Prometheus Metrics: ${{ env.PROMETHEUS_URL }}
+
+            View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Best regards,  
+            CI/CD System
+          to: umarrashad2006@gmail.com
+          from: umarrashad2006@gmail.com
