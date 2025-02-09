@@ -1,4 +1,4 @@
-name: Kubernetes Deployment
+name: Kubernetes Deployment with Datadog Monitoring
 
 on:
   push:
@@ -40,15 +40,48 @@ jobs:
           kubectl describe deployment rms-deployment
           kubectl logs -l app=rms-docker-img
 
-  notify:
+  ## Deploy Datadog Agent for Monitoring
+  datadog-agent:
     runs-on: ubuntu-22.04
     needs: deploy
 
     steps:
+      - name: Deploy Datadog Agent in Kubernetes
+        run: |
+          kubectl create namespace datadog || true
+          helm repo add datadog https://helm.datadoghq.com
+          helm repo update
+          helm upgrade --install datadog-agent datadog/datadog \
+            --set datadog.apiKey=${{ secrets.DATADOG_API_KEY }} \
+            --set datadog.site="datadoghq.com" \
+            --set clusterAgent.enabled=true \
+            --set kubeStateMetricsCore.enabled=true \
+            --set logs.enabled=true \
+            --set apm.enabled=true \
+            --namespace datadog
+
+  ## Enable Datadog Application Performance Monitoring (APM)
+  datadog-apm:
+    runs-on: ubuntu-22.04
+    needs: datadog-agent
+    steps:
+      - name: Enable Datadog APM for Express App
+        run: |
+          kubectl set env deployment/rms-deployment \
+            DD_AGENT_HOST="datadog-agent" \
+            DD_TRACE_AGENT_PORT="8126" \
+            DD_ENV="production" \
+            DD_SERVICE="rms-express-app" \
+            DD_VERSION="1.0"
+
+  ## Notify and Send Monitoring Links
+  notify:
+    runs-on: ubuntu-22.04
+    needs: datadog-apm
+    steps:
       - name: Debug Needs Context
         run: |
-          echo "Outcome: ${{ needs.deploy.outcome }}"
-
+          echo "Outcome: ${{ needs.datadog-apm.outcome }}"
       - name: Send Email Notification
         uses: dawidd6/action-send-mail@v3
         with:
@@ -56,14 +89,19 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: >
-            Kubernetes Deployment Status: Kubernetes - success
+          subject: "GitHub Actions Deployment Status with Datadog Monitoring"
           body: |
             Hello,
-            The Kubernetes Deployment workflow has completed with the following status:
-            - Job Status: **success**
-            You can view the details here:
+            
+            The Kubernetes Deployment workflow has completed successfully! 🚀
+            
+            🔹 **Datadog Kubernetes Dashboard**: [View Here](https://app.datadoghq.com/kubernetes)
+            🔹 **Datadog APM Tracing**: [View Here](https://app.datadoghq.com/apm)
+            🔹 **Datadog Logs Monitoring**: [View Here](https://app.datadoghq.com/logs)
+
+            View GitHub Actions Logs:  
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
             Best regards,  
             CI/CD System
           to: umarrashad2006@gmail.com
