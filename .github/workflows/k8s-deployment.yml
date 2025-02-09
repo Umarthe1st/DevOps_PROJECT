@@ -1,4 +1,4 @@
-name: Kubernetes Deployment  # ✅ Keep only one occurrence
+name: Kubernetes Deployment
 
 on:
   push:
@@ -40,46 +40,14 @@ jobs:
           kubectl describe deployment rms-deployment
           kubectl logs -l app=rms-docker-img
 
-  port-forward:
+  notify:
     runs-on: ubuntu-22.04
     needs: deploy
 
     steps:
-      - name: Set up kubectl
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
-
-      - name: Install ngrok
-        run: |
-          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc && \
-          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && \
-          sudo apt update && sudo apt install ngrok
-
-      - name: Start ngrok for Grafana and Prometheus
-        run: |
-          nohup kubectl port-forward svc/prometheus-stack-grafana 3000:80 -n monitoring > /tmp/grafana.log 2>&1 &
-          nohup kubectl port-forward svc/prometheus-stack-kube-prom-prometheus 9090:9090 -n monitoring > /tmp/prometheus.log 2>&1 &
-          sleep 5
-          nohup ngrok http 3000 > /tmp/ngrok-grafana.log 2>&1 &
-          nohup ngrok http 9090 > /tmp/ngrok-prometheus.log 2>&1 &
-
-      - name: Get ngrok URLs
-        run: |
-          sleep 10
-          GRAFANA_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="command_line (http)") | .public_url' | sed -n 1p)
-          PROMETHEUS_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.name=="command_line (http)") | .public_url' | sed -n 2p)
-          echo "GRAFANA_URL=${GRAFANA_URL}" >> $GITHUB_ENV
-          echo "PROMETHEUS_URL=${PROMETHEUS_URL}" >> $GITHUB_ENV
-
-  notify:
-    runs-on: ubuntu-22.04
-    needs: port-forward
-
-    steps:
       - name: Debug Needs Context
         run: |
-          echo "Outcome: ${{ needs.port-forward.outcome }}"
+          echo "Outcome: ${{ needs.deploy.outcome }}"
 
       - name: Send Email Notification
         uses: dawidd6/action-send-mail@v3
@@ -88,17 +56,14 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Kubernetes Deployment Status: Success 🎉"
+          subject: >
+            Kubernetes Deployment Status: Kubernetes - success
           body: |
             Hello,
-            
-            The Kubernetes Deployment workflow has completed successfully! 🚀
-
-            🔹 Grafana Dashboard: ${{ env.GRAFANA_URL }}
-            🔹 Prometheus Metrics: ${{ env.PROMETHEUS_URL }}
-
-            View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
+            The Kubernetes Deployment workflow has completed with the following status:
+            - Job Status: **success**
+            You can view the details here:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             Best regards,  
             CI/CD System
           to: umarrashad2006@gmail.com
